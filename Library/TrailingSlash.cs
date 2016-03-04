@@ -1,4 +1,4 @@
-﻿namespace TrailingSlash
+﻿namespace TrailingSlashLibrary
 {
     using Slashes;
     using System;
@@ -10,7 +10,7 @@
     /// <summary>
     /// Appends a trailing slash to the url and redirects the request.
     /// </summary>
-    public class SlashAppender
+    public class TrailingSlash
     {
         /// <summary>
         /// Don't add a trailing slash when the requested url is empty.
@@ -35,7 +35,7 @@
         /// <summary>
         /// Ctor.
         /// </summary>
-        public SlashAppender()
+        public TrailingSlash()
         {
             ExceptEmpty = true;
             ExceptWithExtension = true;
@@ -48,7 +48,9 @@
         public void Append()
         {
             var url = HttpContext.Current.Request.Url.AbsolutePath.Trim();
-            if (NeedsAppend(url)) AppendAnyway();
+
+            if (NeedsAppend(url))
+                AppendAnyway();
         }
 
         /// <summary>
