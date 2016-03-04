@@ -2,6 +2,8 @@
 {
     using SlashLibrary;
     using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Web;
@@ -25,6 +27,7 @@
         /// <summary>
         /// Don't add a trailing slash when the requested url starts with "api".
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly")]
         public bool ExceptFromApi { get; set; }
 
         /// <summary>
@@ -56,14 +59,16 @@
         /// <summary>
         /// Adds a trailing slash to the current request url and redirects even if it's not necessary.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic",
+            Justification = "Makes more sense for the library consumer this way")]
         public void AppendAnyway()
         {
             var request = HttpContext.Current.Request;
             var response = HttpContext.Current.Response;
 
-            var url = string.Format("/{0}/", Slash.Trim(request.Url.AbsolutePath));
+            var url = string.Format(CultureInfo.InvariantCulture, "/{0}/", Slash.Trim(request.Url.AbsolutePath));
             var query = request.Url.Query;
-            var method = request.HttpMethod.ToUpper();
+            var method = request.HttpMethod.ToUpperInvariant();
 
             response.Clear();
             response.Status = method == "GET" ? "301 Moved Permanently" : "307 Temporary Redirect";
@@ -113,7 +118,7 @@
         {
             var virtualPath = HostingEnvironment.ApplicationVirtualPath;
             var apiUrl = Slash.Trim(Slash.JoinTrimming(virtualPath, "api"));
-            return Slash.TrimStart(url).StartsWith(apiUrl);
+            return Slash.TrimStart(url).StartsWith(apiUrl, StringComparison.Ordinal);
         }
     }
 }
