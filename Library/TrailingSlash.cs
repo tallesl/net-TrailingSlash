@@ -1,6 +1,6 @@
 ﻿namespace TrailingSlashLibrary
 {
-    using Slashes;
+    using SlashLibrary;
     using System;
     using System.IO;
     using System.Linq;
